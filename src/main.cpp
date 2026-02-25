@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 	webrtc::AudioDeviceModule::AudioLayer audioLayer = webrtc::AudioDeviceModule::kPlatformDefaultAudio;
 	std::string nbthreads;
 	std::string passwdFile;
-	std::string authDomain = "mydomain.com";
+	std::string authDomain = "";
 	bool disableXframeOptions = false;
 
 	std::string publishFilter(".*");
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
 			("c,cert", "Path to private key and certificate for HTTPS", cxxopts::value<std::string>())
 			("N,threads", "Number of threads for HTTP server", cxxopts::value<std::string>())
 			("A,passwd", "Password file for HTTP server access", cxxopts::value<std::string>())
-			("D,domain", "Authentication domain for HTTP server access (default:mydomain.com)", cxxopts::value<std::string>())
+			("D,domain", "Authentication domain for HTTP server access (default: empty means disabled)", cxxopts::value<std::string>())
 			("X,disable-xframe", "Disable X-Frame-Options header")
 			("B,base-path", "Base path for HTTP server", cxxopts::value<std::string>());
 
@@ -419,10 +419,12 @@ int main(int argc, char *argv[])
 		{
 			options.push_back("global_auth_file");
 			options.push_back(passwdFile);
+		}
+		if (!authDomain.empty())
+		{
 			options.push_back("authentication_domain");
 			options.push_back(authDomain);
 		}
-
 		try
 		{
 			std::map<std::string, HttpServerRequestHandler::httpFunction> func = webRtcServer->getHttpApi();
